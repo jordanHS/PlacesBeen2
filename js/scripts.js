@@ -1,4 +1,4 @@
- 
+function PlaceList() {
     this.destinations = [];
     this.currentId = 0;
 }
@@ -28,7 +28,7 @@ PlaceList.prototype.deleteDestination = function(id) {
     for (var i=0; i< this.contacts.length; i++) {
         if (this.destinations[i]) {
             if (this.destinations[i].id == id) {
-                delete this.contacts[i];
+                delete this.destinations[i];
             }
         }
     };
@@ -36,10 +36,32 @@ PlaceList.prototype.deleteDestination = function(id) {
 }
 
 function Destination(location, visitDate) {
-    this.location = location;
+    this.locationName = locationName;
     this.visitDate = visitDate;
 }
 
 Destination.prototype.entry = function() {
-    return this.location + " " + this.visitDate;
+    return this.locationName+ " " + this.visitDate;
 }
+
+var placeList = new PlaceList();
+
+function displayPlaceDetails(placeListToDisplay) {
+    var destinationsList = $("ul#destinations");
+    var htmlforDestinationInfo = "";
+    placeListToDisplay.destinations.forEach(function(destination) {
+        htmlforDestinationInfo += "<li id=" + destination.id + ">" + destination.locationName + " " + destination.visitDate + "<li>";
+    });
+    destinationsList.html(htmlforDestinationInfo);
+};
+
+$(document).ready(function() {
+    $("form#new-destination").submit(function(event) {
+        event.preventDefault();
+        var locationInput = $("input#new-location").val();
+        var dateInput = $("input#visit-date").val();
+        var newDestination = new Destination(locationInput, dateInput);
+        placeList.addDestination(newDestination);
+        displayPlaceDetails(placeList);
+    })
+})
